@@ -147,7 +147,10 @@ export const ResultsPanel = () => {
 
   // Re-show the panel whenever a new run finishes.
   if (seen !== status) { setSeen(status); setHidden(false); }
-  if (hidden || (status !== 'done' && status !== 'error')) return null;
+  // On success the Output node already shows the result; the panel is only for
+  // failures and for pipelines that have no Output node to display anything.
+  const hasResults = Object.keys(results || {}).length > 0;
+  if (hidden || (status !== 'done' && status !== 'error') || (status === 'done' && hasResults)) return null;
 
   return (
     <div
@@ -159,21 +162,15 @@ export const ResultsPanel = () => {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderBottom: '1px solid #D9D2C5', background: '#F5F2E8' }}>
         <span style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-          {status === 'done' ? 'Run results' : 'Run failed'}
+          {status === 'done' ? 'Run finished' : 'Run failed'}
         </span>
         <button onClick={() => setHidden(true)} aria-label="Dismiss"><CloseIcon size={14} color="#88867D" /></button>
       </div>
       <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {status === 'error' && <p style={{ fontSize: 12, color: '#B91C1C' }}>{error}</p>}
-        {status === 'done' && Object.keys(results || {}).length === 0 && (
+        {status === 'done' && !hasResults && (
           <p style={{ fontSize: 12, color: '#54585F' }}>Run finished. Add an Output node to capture a result.</p>
         )}
-        {status === 'done' && Object.entries(results || {}).map(([key, value]) => (
-          <div key={key}>
-            <div style={{ fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#88867D', marginBottom: 4 }}>{key}</div>
-            <div style={{ fontSize: 12, whiteSpace: 'pre-wrap', color: '#0F131A' }}>{String(value)}</div>
-          </div>
-        ))}
       </div>
     </div>
   );
