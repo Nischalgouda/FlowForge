@@ -1,7 +1,7 @@
 # FlowForge - Technical Architecture
 
 ## 1. Overview
-The FlowForge is a visual node-based editor built using React, ReactFlow, Zustand, TailwindCSS, and FastAPI. It allows users to drag-and-drop functional nodes to build complex logic graphs (like LLM chaining, data transformations, etc.).
+FlowForge is a visual node-based editor built with React, ReactFlow, Zustand, TailwindCSS, and FastAPI. Users drag nodes onto a canvas to build LLM pipelines, validate them as a DAG, and run them with Gemini or Claude, with progress streamed back per node. See the root README for diagrams and design decisions.
 
 ## 2. Frontend Architecture
 - **Framework:** React 18 (Client-side rendered)
@@ -27,18 +27,18 @@ We implemented 9 specific node types. All are registered in `ui.js` and extend `
 8. `ValidatorNode`
 9. `TransformNode`
 
-Each node stores its unique configuration state locally (via `useState`), though in a full production app, this state would map directly back into the Zustand `data` object to persist changes on export.
+Input, Text, LLM and Output nodes mirror their settings into the Zustand store (`updateNodeField`), so the backend receives exactly what is on screen. The API, Database, Filter, Validator and Transform nodes are UI-only for now; the engine passes their input through.
 
 ## 4. Backend Architecture
-- **Framework:** FastAPI (Python)
-- **CORS:** Configured to allow all origins during development.
-- **Data Models:** Uses `pydantic` to validate incoming JSON structures (`Node`, `Edge`, `Pipeline`).
-- **Endpoint:** `POST /pipelines/parse`
-- **Core Logic (Cycle Detection):**
-  - Accepts the nodes and edges from the frontend.
-  - Constructs an adjacency list representing a Directed Graph.
-  - Runs a recursive Depth-First Search (DFS) algorithm with a recursion stack tracking mechanism (`rec_stack`) to detect cyclical dependencies (back-edges).
-  - Returns `is_dag: bool`, `num_nodes: int`, and `num_edges: int`.
+- **Framework:** FastAPI (Python), Pydantic models for `Node`, `Edge`, `Pipeline`.
+- **CORS:** Origins come from the `ALLOWED_ORIGINS` env var (`*` only as a local default).
+- **Modules:**
+  - `graph.py`: pure helpers. Kahn's algorithm returns an execution order or `None` when the graph has a cycle.
+  - `engine.py`: runs nodes in topological order and yields events (`run_start`, `node_start`, `node_done`, `node_error`, `run_done`, `run_error`).
+  - `providers.py`: Gemini and Claude adapters over plain REST (`httpx`).
+  - `main.py`: routes, SSE streaming, bring-your-own-key handling, and an in-memory per-IP rate limit for runs that use the server's key.
+- **Endpoints:** `GET /models`, `POST /pipelines/parse` (counts and `is_dag`), `POST /pipelines/run` (SSE stream).
+- **Tests:** `pytest` covers graph ordering, cycle detection and the engine, with the LLM call mocked.
 
 ## 5. Known Edge Cases Addressed
 - **ReactFlow Event Bubbling:** ReactFlow stops event propagation for drag/pan. This breaks standard click-outside hooks for custom UI elements (like our dropdowns). Solved by using the capture phase (`addEventListener(..., true)`).

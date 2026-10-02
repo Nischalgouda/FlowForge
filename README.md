@@ -97,7 +97,6 @@ Tests: `cd backend && pip install -r requirements-dev.txt && pytest`
 
 ## Docs
 - [Architecture notes](docs/architecture.md)
-- [Demo script](docs/demo_script.md)
 
 ## License
 MIT
