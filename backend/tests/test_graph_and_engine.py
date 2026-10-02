@@ -83,3 +83,42 @@ async def test_llm_node_uses_provider(monkeypatch):
     edges = [_edge("in-1", "llm-1", "prompt"), _edge("llm-1", "out-1", "value")]
     events = await _collect(nodes, edges)
     assert events[-1]["results"] == {"r": "echo:ping"}
+
+
+# ── providers ──────────────────────────────────────────────────────────────────
+
+@pytest.mark.asyncio
+async def test_provider_retries_transient_errors(monkeypatch):
+    import providers
+
+    calls = {"n": 0}
+
+    async def flaky(client, model, prompt, system, temperature, api_key):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise providers.ProviderError("overloaded", retryable=True)
+        return "ok"
+
+    async def no_sleep(_):
+        pass
+
+    monkeypatch.setattr(providers, "_gemini", flaky)
+    monkeypatch.setattr(providers.asyncio, "sleep", no_sleep)
+    assert await providers.generate("Gemini 3.5 Flash", "hi", "", 0.0, "k") == "ok"
+    assert calls["n"] == 3
+
+
+@pytest.mark.asyncio
+async def test_provider_does_not_retry_bad_key(monkeypatch):
+    import providers
+
+    calls = {"n": 0}
+
+    async def bad_key(client, model, prompt, system, temperature, api_key):
+        calls["n"] += 1
+        raise providers.ProviderError("rejected")
+
+    monkeypatch.setattr(providers, "_gemini", bad_key)
+    with pytest.raises(providers.ProviderError):
+        await providers.generate("Gemini 3.5 Flash", "hi", "", 0.0, "k")
+    assert calls["n"] == 1

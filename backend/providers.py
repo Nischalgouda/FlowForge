@@ -1,4 +1,5 @@
 """LLM provider adapters. Plain REST over httpx: no vendor SDKs to pin."""
+import asyncio
 import os
 from typing import Dict, Optional, Tuple
 
@@ -15,8 +16,14 @@ MAX_OUTPUT_TOKENS = 1024
 TIMEOUT = httpx.Timeout(60.0)
 
 
+RETRIES = 3          # total attempts for transient failures
+BACKOFF_SECONDS = 1.5
+
+
 class ProviderError(Exception):
-    pass
+    def __init__(self, message: str, retryable: bool = False):
+        super().__init__(message)
+        self.retryable = retryable
 
 
 def provider_for(model_label: str) -> str:
@@ -33,10 +40,16 @@ async def generate(
     model_label: str, prompt: str, system: str, temperature: float, api_key: str
 ) -> str:
     provider, model = MODELS[model_label]
+    call = _gemini if provider == "gemini" else _anthropic
     async with httpx.AsyncClient(timeout=TIMEOUT) as client:
-        if provider == "gemini":
-            return await _gemini(client, model, prompt, system, temperature, api_key)
-        return await _anthropic(client, model, prompt, system, temperature, api_key)
+        for attempt in range(1, RETRIES + 1):
+            try:
+                return await call(client, model, prompt, system, temperature, api_key)
+            except ProviderError as exc:
+                # Retry only transient failures (429 / 503), with exponential backoff.
+                if not exc.retryable or attempt == RETRIES:
+                    raise
+                await asyncio.sleep(BACKOFF_SECONDS * 2 ** (attempt - 1))
 
 
 async def _gemini(client, model, prompt, system, temperature, api_key) -> str:
@@ -83,9 +96,9 @@ def _raise_for_status(res: httpx.Response) -> None:
     if res.status_code in (401, 403):
         raise ProviderError("The provider rejected the API key")
     if res.status_code == 429:
-        raise ProviderError("Provider rate limit reached, try again shortly")
+        raise ProviderError("Provider rate limit reached, try again shortly", retryable=True)
     if res.status_code == 404:
         raise ProviderError("Model unavailable for this API key")
     if res.status_code == 503:
-        raise ProviderError("Provider is overloaded, try again in a moment")
+        raise ProviderError("Provider is overloaded, try again in a moment", retryable=True)
     raise ProviderError(f"Provider error (HTTP {res.status_code})")
