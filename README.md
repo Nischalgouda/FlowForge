@@ -6,7 +6,9 @@
 
 <!-- Add a demo GIF here: docs/demo.gif -->
 
-**Live demo:** _coming soon_
+**Live demo:** https://flow-forge-liard.vercel.app  ·  **API:** https://flowforge-api-igzx.onrender.com
+
+> The API runs on a free tier and sleeps when idle, so the first request can take 30 to 60 seconds. The demo key is rate limited; add your own key under **API Keys** to run without limits.
 
 ## What it does
 - Drag nodes (Input, Text Template, LLM, Output, and more) onto a canvas and wire them together.
