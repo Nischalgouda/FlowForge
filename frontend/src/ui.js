@@ -35,6 +35,11 @@ const nodeTypes = {
   transform:    TransformNode,
 };
 
+const getInitNodeData = (nodeID, type) => ({
+  id: nodeID,
+  nodeType: type,
+});
+
 const selector = (state) => ({
   nodes:          state.nodes,
   edges:          state.edges,
@@ -74,11 +79,6 @@ export const PipelineUI = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hoveredEdge, removeEdge]);
 
-  const getInitNodeData = (nodeID, type) => ({
-    id: nodeID,
-    nodeType: type,
-  });
-
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -106,7 +106,7 @@ export const PipelineUI = () => {
         addNode(newNode);
       }
     },
-    [reactFlowInstance, addNode, getInitNodeData, getNodeID]
+    [reactFlowInstance, addNode, getNodeID]
   );
 
   const onDragOver = useCallback((event) => {

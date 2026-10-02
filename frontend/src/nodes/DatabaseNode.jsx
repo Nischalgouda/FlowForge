@@ -5,7 +5,6 @@ import { BaseNode } from '../common/BaseNode';
 import { CustomSelect } from '../common/CustomSelect';
 
 const lbl = { display: 'block', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#88867D', marginBottom: 4 };
-const inp = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #D9D2C5', outline: 'none', fontSize: 12, color: '#0F131A', padding: '3px 0', fontFamily: "'Inter', sans-serif", cursor: 'pointer' };
 const ta  = { width: '100%', background: '#FFFEFB', border: '1px solid #D9D2C5', borderRadius: 4, outline: 'none', fontSize: 11, color: '#0F131A', padding: '6px 8px', fontFamily: 'monospace', resize: 'none', lineHeight: 1.6, boxSizing: 'border-box' };
 
 export const DatabaseNode = ({ id, data }) => {

@@ -4,7 +4,6 @@ import { PipelineToolbar } from './toolbar';
 import { PipelineUI } from './ui';
 import { SubmitButton } from './submit';
 import { RunButton, SettingsButton, ResultsPanel } from './run';
-import { useStore } from './store';
 
 import { useState } from 'react';
 

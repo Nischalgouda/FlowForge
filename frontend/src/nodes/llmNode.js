@@ -6,7 +6,6 @@ import { CustomSelect } from '../common/CustomSelect';
 import { useStore } from '../store';
 
 const lbl = { display: 'block', fontSize: 9, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#88867D', marginBottom: 4 };
-const inp = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #D9D2C5', outline: 'none', fontSize: 12, color: '#0F131A', padding: '3px 0', fontFamily: "'Inter', sans-serif", cursor: 'pointer' };
 
 export const LLMNode = ({ id, data }) => {
   const [model, setModel] = useState(data?.model || 'Gemini 3.5 Flash');
