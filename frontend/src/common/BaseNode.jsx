@@ -175,6 +175,20 @@ export const BaseNode = ({
         />
       ))}
 
+      {/* ── Input handle labels (only when there are several, so they can't be confused) ── */}
+      {inputHandles.length > 1 && inputHandles.map((h, i) => h.label && (
+        <span
+          key={`${h.id}-label`}
+          style={{
+            position: 'absolute', right: '100%', marginRight: 10,
+            top: getTop(i, inputHandles.length), transform: 'translateY(-50%)',
+            fontSize: 10, fontFamily: 'monospace', color: '#584824', pointerEvents: 'none',
+          }}
+        >
+          {h.label}
+        </span>
+      ))}
+
       {/* ── Output handles (right edge) ────────────────────── */}
       {outputHandles.map((h, i) => (
         <Handle

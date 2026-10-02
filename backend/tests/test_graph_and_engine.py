@@ -77,7 +77,7 @@ async def test_llm_node_uses_provider(monkeypatch):
     monkeypatch.setattr(engine.providers, "generate", fake_generate)
     nodes = [
         _node("in-1", "customInput", value="ping"),
-        _node("llm-1", "llm", model="Gemini 2.5 Flash", temperature=0.2),
+        _node("llm-1", "llm", model="Gemini 3.5 Flash", temperature=0.2),
         _node("out-1", "customOutput", outputName="r"),
     ]
     edges = [_edge("in-1", "llm-1", "prompt"), _edge("llm-1", "out-1", "value")]

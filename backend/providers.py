@@ -6,7 +6,7 @@ import httpx
 
 # UI label -> (provider, model id)
 MODELS: Dict[str, Tuple[str, str]] = {
-    "Gemini 2.5 Flash": ("gemini", "gemini-2.5-flash"),
+    "Gemini 3.5 Flash": ("gemini", "gemini-3.5-flash"),
     "Claude Sonnet 5.5": ("anthropic", "claude-sonnet-5-5"),
     "Claude Haiku 4.5": ("anthropic", "claude-haiku-4-5-20251001"),
 }
@@ -84,4 +84,8 @@ def _raise_for_status(res: httpx.Response) -> None:
         raise ProviderError("The provider rejected the API key")
     if res.status_code == 429:
         raise ProviderError("Provider rate limit reached, try again shortly")
+    if res.status_code == 404:
+        raise ProviderError("Model unavailable for this API key")
+    if res.status_code == 503:
+        raise ProviderError("Provider is overloaded, try again in a moment")
     raise ProviderError(f"Provider error (HTTP {res.status_code})")

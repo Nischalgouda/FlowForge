@@ -9,7 +9,7 @@ const lbl = { display: 'block', fontSize: 9, fontWeight: 600, textTransform: 'up
 const inp = { width: '100%', background: 'transparent', border: 'none', borderBottom: '1px solid #D9D2C5', outline: 'none', fontSize: 12, color: '#0F131A', padding: '3px 0', fontFamily: "'Inter', sans-serif", cursor: 'pointer' };
 
 export const LLMNode = ({ id, data }) => {
-  const [model, setModel] = useState(data?.model || 'Gemini 2.5 Flash');
+  const [model, setModel] = useState(data?.model || 'Gemini 3.5 Flash');
   const [temp, setTemp]   = useState(data?.temperature ?? 0.7);
   const update = useStore(s => s.updateNodeField);
 
@@ -27,7 +27,7 @@ export const LLMNode = ({ id, data }) => {
       minWidth={260}>
       <div>
         <label style={lbl}>Model</label>
-        <CustomSelect value={model} onChange={v => { setModel(v); update(id, 'model', v); }} options={['Gemini 2.5 Flash', 'Claude Sonnet 5.5', 'Claude Haiku 4.5']} />
+        <CustomSelect value={model} onChange={v => { setModel(v); update(id, 'model', v); }} options={['Gemini 3.5 Flash', 'Claude Sonnet 5.5', 'Claude Haiku 4.5']} />
       </div>
       <div>
         <label style={lbl}>Temperature</label>

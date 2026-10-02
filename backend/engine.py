@@ -50,7 +50,7 @@ async def _run_node(node: dict, inputs: Dict[str, Any], resolve_key: Callable[[s
         prompt = inputs.get("prompt")
         if not prompt:
             raise NodeError("Connect something to the prompt input")
-        label = data.get("model") or "Gemini 2.5 Flash"
+        label = data.get("model") or "Gemini 3.5 Flash"
         try:
             provider = providers.provider_for(label)
             return await providers.generate(
@@ -94,7 +94,7 @@ async def run_pipeline(
             value = await _run_node(node, _gather_inputs(node_id, edges, outputs), resolve_key)
         except NodeError as exc:
             yield {"type": "node_error", "id": node_id, "message": str(exc)}
-            yield {"type": "run_error", "message": f"Stopped at {node_id}"}
+            yield {"type": "run_error", "message": f"{node_id}: {exc}"}
             return
         outputs[node_id] = value
         if node["type"] == "customOutput":
