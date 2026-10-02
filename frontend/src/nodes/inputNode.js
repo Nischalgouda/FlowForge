@@ -42,7 +42,7 @@ export const InputNode = ({ id, data }) => {
       <div>
         <label style={fieldLabel}>Value (runtime input)</label>
         <textarea value={value} onChange={e => set('value', setValue)(e.target.value)}
-          className="nodrag" rows={2} placeholder="Text passed into the pipeline"
+          className="nodrag nowheel" rows={2} placeholder="Text passed into the pipeline"
           style={{ ...fieldInput, border: '1px solid #D9D2C5', borderRadius: 4, padding: '4px 6px', resize: 'vertical', boxSizing: 'border-box' }} />
       </div>
       <div>

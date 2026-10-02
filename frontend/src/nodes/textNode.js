@@ -42,6 +42,7 @@ export const TextNode = ({ id, data }) => {
           <label style={lbl}>Template Prompt</label>
           <textarea
             ref={textareaRef}
+            className="nodrag nowheel"
             value={text}
             onChange={e => { setText(e.target.value); update(id, 'text', e.target.value); }}
             placeholder="Summarize this: {{user_query}}"
