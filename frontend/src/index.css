@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FFFEFB;
+  --bg-alt: #FCF9F0;
+  --paper: #FBF9F4;
+  --ink: #0F131A;
+  --ink-soft: #20242C;
+  --muted: #54585F;
+  --dim: #88867D;
+  --rule: #D9D2C5;
+  --rule-dk: #8FB7A4;
+  --accent: #584824;
+  --serif: 'Newsreader', 'Times New Roman', Georgia, serif;
+  --sans: 'Inter Tight', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  }
+}
+
+@layer components {
+  /* Node input fields */
+  .node-input {
+    @apply w-full px-2 py-1.5 text-xs rounded border bg-white/5 border-white/10 text-gray-200
+           placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+           transition-all duration-150;
+  }
+
+  .node-input-light {
+    @apply w-full px-2 py-1.5 text-xs rounded border bg-gray-50 border-gray-200 text-gray-800
+           placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400
+           transition-all duration-150;
+  }
+
+  .node-select {
+    @apply w-full px-2 py-1.5 text-xs rounded border bg-white/5 border-white/10 text-gray-200
+           focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all duration-150 cursor-pointer;
+  }
+
+  .node-select-light {
+    @apply w-full px-2 py-1.5 text-xs rounded border bg-gray-50 border-gray-200 text-gray-800
+           focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-all duration-150 cursor-pointer;
+  }
+
+  .node-label {
+    @apply block text-[10px] font-semibold uppercase tracking-widest mb-1;
+  }
+
+  /* ReactFlow overrides */
+  .react-flow__handle {
+    width: 10px !important;
+    height: 10px !important;
+    border: 2px solid !important;
+    border-radius: 50% !important;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .react-flow__handle:hover {
+    transform: scale(1.4);
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.8);
+  }
+
+  .react-flow__handle-left {
+    left: -6px !important;
+  }
+
+  .react-flow__handle-right {
+    right: -6px !important;
+  }
+}
+
+/* Edge Hover Styles */
+.react-flow__edge-path {
+  transition: stroke-width 0.2s ease, stroke 0.2s ease;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 3px !important;
+  stroke: #584824 !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.4);
+  border-radius: 4px;
+}
