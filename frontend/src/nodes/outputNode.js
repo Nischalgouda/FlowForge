@@ -1,6 +1,6 @@
 // outputNode.js — inline styles
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BaseNode } from '../common/BaseNode';
 import { CustomSelect } from '../common/CustomSelect';
 import { useStore } from '../store';
@@ -13,6 +13,12 @@ export const OutputNode = ({ id, data }) => {
   const [outputType, setType] = useState(data?.outputType || 'Text');
   const update = useStore(s => s.updateNodeField);
   const set = (field, setter) => v => { setter(v); update(id, field, v); };
+
+  // Persist the default so the backend labels results with it.
+  useEffect(() => {
+    if (!data?.outputName) update(id, 'outputName', name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <BaseNode id={id} data={data} title="Output" iconType="output"

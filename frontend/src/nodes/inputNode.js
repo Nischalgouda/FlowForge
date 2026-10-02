@@ -1,6 +1,6 @@
 // inputNode.js — inline-style inputs
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BaseNode } from '../common/BaseNode';
 import { CustomSelect } from '../common/CustomSelect';
 import { useStore } from '../store';
@@ -23,6 +23,11 @@ export const InputNode = ({ id, data }) => {
   const [value, setValue] = useState(data?.value || '');
   const update = useStore(s => s.updateNodeField);
   const set = (field, setter) => v => { setter(v); update(id, field, v); };
+
+  useEffect(() => {
+    if (!data?.inputName) update(id, 'inputName', name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <BaseNode id={id} data={data} title="Input" iconType="input"

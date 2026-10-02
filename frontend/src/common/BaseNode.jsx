@@ -56,6 +56,7 @@ export const BaseNode = ({
     <div
       style={{
         minWidth,
+        maxWidth: Math.max(minWidth, 420),
         fontFamily: "'Inter', sans-serif",
         background: '#FBF9F4',
         border: '1px solid #D9D2C5',
@@ -149,16 +150,17 @@ export const BaseNode = ({
         {run?.status === 'error' && (
           <div style={{ fontSize: 10, color: '#DC2626', fontFamily: 'monospace' }}>{run.message}</div>
         )}
-        {run?.status === 'done' && run.output !== '' && (
+        {run?.status === 'done' && run.output !== '' && iconType !== 'input' && (
           <div
             className="nodrag nowheel"
             style={{
               fontSize: 10, color: '#065F46', fontFamily: 'monospace', whiteSpace: 'pre-wrap',
+              overflowWrap: 'anywhere',
               background: '#ECFDF5', border: '1px solid #6EE7B7', borderRadius: 4,
               padding: '6px 8px', maxHeight: 120, overflow: 'auto',
             }}
           >
-            {String(run.output)}
+            {String(run.output).length > 600 ? `${String(run.output).slice(0, 600)}…` : String(run.output)}
           </div>
         )}
       </div>
